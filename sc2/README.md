@@ -19,7 +19,7 @@ In order to run experiments on StarCraft II environment, please follow the [offi
 After the installation, move the custom SC2 scenarios to `StarCraftII/Maps/mini_games` directory:
 
 ```shell
-cd MSGI
+cd msgi
 cp custom_maps/*.SC2Map [SC2_dir]/StarCraftII/Maps/mini_games/
 ```
 
@@ -28,8 +28,9 @@ cp custom_maps/*.SC2Map [SC2_dir]/StarCraftII/Maps/mini_games/
 Extract, unzip, and install our modified pySC2 from `data` directory:
 
 ```shell
-cp data/pysc2.zip ../ && unzip ../pysc2.zip
-cd ../pysc2
+cp data/pysc2.zip ../ && cd ..
+unzip pysc2.zip
+cd pysc2
 pip install -e .
 ```
 

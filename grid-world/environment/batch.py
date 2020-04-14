@@ -13,10 +13,7 @@ from environment.batch_graph import Batch_SubtaskGraph
 
 def _get_id_from_ind_multihot(indexed_tensor, mapping, max_dim):
     nbatch = indexed_tensor.shape[0]
-    if isinstance(indexed_tensor, torch.BoolTensor):
-        out = torch.zeros(nbatch, max_dim).bool()
-        out.scatter_(1, mapping, indexed_tensor)
-    elif isinstance(indexed_tensor, torch.ByteTensor):
+    if isinstance(indexed_tensor, torch.ByteTensor):
         out = torch.zeros(nbatch, max_dim).byte()
         out.scatter_(1, mapping, indexed_tensor)
     else:
@@ -167,15 +164,6 @@ class Batch_env(object):
         act_id_mask     = _to_multi_hot(act_ids_masked, self.max_task)
         act_ind_mask    = _to_multi_hot(act_inds_masked, self.ntasks)
 
-        if not torch.all(~active.bool() + torch.gather(self.elig_ind*self.mask_ind.byte(), 1, act_inds).bool() ):
-            print('Error! the executed action_index is either ineligible or maksed')
-            import ipdb; ipdb.set_trace()
-            assert False
-        if not torch.all(~active.bool() + torch.gather(self.elig_id*self.mask_id.byte(), 1, act_ids).bool() ):
-            print('Error! the executed action_ID is either ineligible or maksed')
-            import ipdb; ipdb.set_trace()
-            assert False
-
         # 2. mask, tp, elig
         ### 2-1. mask, tp, elig
         self.mask_ind.masked_fill_(act_ind_mask, 0)
@@ -189,7 +177,7 @@ class Batch_env(object):
         self._update_delayed_states()
         ### 2-3. if episode is done, reset
         task_dones = torch.mul(self.mask_ind.float(), self.elig_ind.float()).sum(1).lt(1)
-        dones = torch.max(task_dones, step_dones.bool())
+        dones = torch.max(task_dones, step_dones.byte())
         self.done_count += dones.long()
         if dones.sum()>0:
             self._reset_episode(dones)  # if episode is done, reset mask, tp

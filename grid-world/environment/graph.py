@@ -7,12 +7,9 @@ __PATH__ = os.path.abspath(os.path.dirname(__file__))
 class SubtaskGraph(object):
     def __init__(self, args, nb_subtask=0):
         #1. init/load graph
-        if args.graph_config==None:
-            self._init_graph(nb_subtask=nb_subtask)
-        else:
-            folder = args.graph_config['folder']
-            gamename = args.graph_config['gamename']
-            self._load_graph(folder, gamename) # subtask_list / edges (ANDmat&ORmat) / subtask reward
+        folder = args.graph_config['folder']
+        gamename = args.graph_config['gamename']
+        self._load_graph(folder, gamename) # subtask_list / edges (ANDmat&ORmat) / subtask reward
         self.nbatch = args.num_processes
         self.game_config = args.game_config
         self.max_task = self.game_config.nb_subtask_type
@@ -79,9 +76,6 @@ class SubtaskGraph(object):
         ANDout = torch.addmv(-b_AND, ANDmat, indicator).sign().ne(-1).type(torch.float) #sign(A x indic + b) (+1 or 0)
         elig_hard = torch.addmv(-b_OR, ORmat, ANDout).sign().ne(-1)
         return elig_hard
-
-    def __str__(self): #print
-        return "n_subtask="+self.nb_subtask
 
     def draw_graph(self, env_name, g_ind, epi_ind = None):
         rewards = self.rmag

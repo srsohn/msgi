@@ -409,20 +409,10 @@ class ILP(object):
 
         #2. fillout ANDmat/ORmat
         if len(W_a)==0:
+            print('Error! Subtask graph is flat')
             import ipdb; ipdb.set_trace()
         ANDmat  = torch.cat(W_a, dim=0)
         ORmat   = torch.cat(W_o, dim=1)
-
-        if numA_all==0 or self.ntasks==0:
-            print('self.ntasks=',self.ntasks)
-            print('numA_all=',numA_all)
-            print('Kmap_set=')
-            print(Kmap_set)
-            print('tind_by_layer=')
-            print(tind_by_layer)
-            print('tind_list=')
-            print(tind_list)
-            import ipdb; ipdb.set_trace()
 
         return W_a, W_o, ANDmat, ORmat
 

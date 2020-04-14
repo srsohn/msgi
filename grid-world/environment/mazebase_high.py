@@ -205,7 +205,7 @@ class Mazebase_high(object):
                     target_obj = obj
                     flag = True
         if not flag:
-            print('warning! no target object!')
+            print('Error! no target object!')
             import ipdb; ipdb.set_trace()
             assert(False)
         step = mindist + 1

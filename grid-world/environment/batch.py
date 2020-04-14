@@ -11,7 +11,6 @@ from graph.graph_utils import _to_multi_hot, _transform, dotdict
 from environment.graph import SubtaskGraph
 from environment.batch_graph import Batch_SubtaskGraph
 
-
 def _get_id_from_ind_multihot(indexed_tensor, mapping, max_dim):
     nbatch = indexed_tensor.shape[0]
     if isinstance(indexed_tensor, torch.BoolTensor):
@@ -28,7 +27,6 @@ def _get_id_from_ind_multihot(indexed_tensor, mapping, max_dim):
 
 class Batch_env(object):
     def __init__(self, args):
-        self.verbose = args.verbose
         self.num_envs = args.num_processes
         self.num_graphs = 500
         root = os.getcwd()
@@ -194,20 +192,8 @@ class Batch_env(object):
         dones = torch.max(task_dones, step_dones.bool())
         self.done_count += dones.long()
         if dones.sum()>0:
-            if self.verbose>0:
-                for b in range(self.num_envs):
-                    if dones[b].item()==1:
-                        prt = '+++ Batch#'+str(b)+': '
-                        if task_dones[b].item()==1:
-                            prt += 'No subtask left. '
-                        if step_dones[b].item()==1:
-                            prt += 'Time expired. '
-                        print(prt)
             self._reset_episode(dones)  # if episode is done, reset mask, tp
         self.epi_dones = dones
-        # 3. others
-        if torch.any(act_inds.lt(0)) or torch.any(act_inds.gt(self.ntasks-1)):
-            import ipdb; ipdb.set_trace()
 
         # save outputs
         self.obs    = torch.stack( [env.get_state() for env in self.envs] )

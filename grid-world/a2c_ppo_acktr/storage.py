@@ -90,8 +90,6 @@ class RolloutStorage_feat(object):
             for step in reversed(range(self.rewards.size(0))):
                 self.returns[step] = self.returns[step + 1] * \
                     gamma * self.active[step + 1] + self.rewards[step]
-            if not torch.all((self.returns[0,:,:] - self.rewards.sum(0))/self.rewards.sum(0)<0.01):
-                import ipdb; ipdb.set_trace()
 
     def feed_forward_generator(self, advantages, num_mini_batch):
         num_steps, num_processes = self.rewards.size()[0:2]

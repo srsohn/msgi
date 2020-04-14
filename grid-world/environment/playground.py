@@ -21,13 +21,7 @@ class Playground(object):
         object_list.append(dict(imgname='egg.png', name='egg', pickable=True, transformable=True, oid=6, outcome=8, updateable=False, speed=0))
         object_list.append(dict(imgname='heart.png', name='heart', pickable=True, transformable=True, oid=7, outcome=8, updateable=False, speed=0))
         object_list.append(dict(imgname='ice.png', name='ice', pickable=False, transformable=False, oid=8, outcome=8, updateable=False, speed=0))
-        """
-        object_image_list = []
-        img_folder = os.path.join(ROOT_DIR,'config','playground')
-        for obj in object_list:
-            image = pygame.image.load( os.path.join(img_folder,obj['imgname'])  )
-            object_image_list.append(image)
-        """
+
         #item = agent+block+water+objects
         item_name_to_iid = dict()
         item_name_to_iid['agent']=0
@@ -61,7 +55,6 @@ class Playground(object):
         self.item_name_to_iid = item_name_to_iid
         self.nb_block = nb_block
         self.subtask_list=subtask_list
-        #self.object_image_list=object_image_list
         self.subtask_param_list=subtask_param_list
         self.subtask_param_to_id=subtask_param_to_id
 

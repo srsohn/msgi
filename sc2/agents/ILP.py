@@ -516,14 +516,9 @@ class ILP(object):
                 TP = self._get_A_B( k_infer_, k_gt_ )
                 FN = num_gt - TP
                 FP = num_infer - TP
-                if FP<0:
-                    import ipdb; ipdb.set_trace()
                 precision[ind]  = TP / (TP+FP)
                 recall[ind]     = TP / (TP+FN)
 
-        if np.any(precision<-0.01) or np.any(precision>1.01):
-            import ipdb; ipdb.set_trace()
-            assert(False)
         filename = os.path.join(self.dirname, 'graph_PR.txt')
         with open(filename, 'a') as f:
             string = '{}\t{:.02f}\t{:.02f}\t{:.02f}\t{:.02f}\n'.format(ep, precision.mean(), recall.mean(), 0., 0.)
@@ -572,7 +567,6 @@ class ILP(object):
         elif kmap_mat.dim()==1 or kmap_mat.shape[0]==1: # simply count number of 0's
             return pow(2, self._num_zero(kmap_mat) )
         NA, dim = kmap_mat.shape
-        # TODO: out of 2^feat_dim, count the number of binary assignments that satisfy the kmap_mat
 
         # 0. prune out all-DC bits
         target_indices = []
@@ -589,13 +583,12 @@ class ILP(object):
         numO, feat_dim = compact_kmap.shape # NO x d
 
         if feat_dim > 25:
-            print('there are tooo many non-DC features!!! will take long!')
+            print('[Warning] there are too many non-DC features!! It will take long time')
             import ipdb; ipdb.set_trace()
         # 1. gen samples
         nelem = pow(2, feat_dim)
         bin_mat = torch.tensor(list(map(list, itertools.product([-1, 1], repeat=feat_dim))), dtype=torch.int8) # +1 / -1
         # N x d
-        #import ipdb; ipdb.set_trace()
         false_map = (compact_kmap.unsqueeze(0) * bin_mat.unsqueeze(1) == -1).sum(2) # NxNOxd --> NxNO
         true_map = (false_map==0) # NxNO
         truth_val_vec = (true_map.sum(1)>0) # if any one of NO is True, then count as True (i.e, OR operation)

@@ -217,6 +217,4 @@ class GRProp(BaseMetaAgent):
         masked_exps = exps * mask
         masked_sums = masked_exps.sum(dim, keepdim=True) + epsilon
         prob =  masked_exps/masked_sums
-        if not torch.all(prob.ge(0)):
-            import ipdb; ipdb.set_trace()
         return prob

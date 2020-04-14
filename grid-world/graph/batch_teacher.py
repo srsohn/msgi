@@ -193,6 +193,7 @@ class Teacher(object):
         gradient = tp.grad.squeeze(-1)
 
         if torch.isnan(gradient).any():
+            print('Error! there is a NaN in the gradient')
             import ipdb; ipdb.set_trace()
         return gradient
 
@@ -206,8 +207,6 @@ class Teacher(object):
         masked_exps = exps * mask
         masked_sums = masked_exps.sum(dim, keepdim=True) + epsilon
         prob =  masked_exps/masked_sums
-        if not torch.all(prob.ge(0)):
-            import ipdb; ipdb.set_trace()
         return prob
 
     def choose_action(self, state, eval_flag=False):
@@ -245,8 +244,6 @@ class Teacher(object):
             masked_logit = self.temp*(masked_logit - masked_logit.min(1)[0].unsqueeze(-1))*sub_mask
             prob = F.softmax(masked_logit, dim=1).data
             prob_masked = prob * sub_mask
-            if torch.any(prob_masked.lt(0.)) or torch.any(prob_masked.sum(1).lt(0.01)):
-                import ipdb; ipdb.set_trace()
             m = torch.distributions.Categorical(prob_masked)
             tind = m.sample()       # Nbatch x 1
             tid[active] = _transform(tind, self.tind_to_tid[active]).squeeze()

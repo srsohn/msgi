@@ -256,8 +256,6 @@ def rollout_trial(args, envs, agent, nb_epi, rnn_h=None, train=False, rollouts=N
             rnn_h = torch.zeros(args.num_processes, agent.actor_critic.recurrent_hidden_state_size, device=device) # only for hrl
     for step in range(args.ntasks * nb_epi): # unroll an episode
         ## Sample actions
-        if args.verbose > 0:
-            print('======  step = ', step)
         if agent.algo == 'a2c':
             if train:
                 with torch.no_grad():

@@ -32,7 +32,7 @@ sh scripts/eval_msgi_random.sh
 sh scripts/train_eval_hrl.sh
 ```
 
-**RL$^2$**
+**RL<sup>2<\sup>**
 ```shell
 sh scripts/train_eval_rl2.sh
 ```

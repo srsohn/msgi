@@ -50,5 +50,7 @@ And then, run the following:
 python main.py --map BuildBattleCruiser_20 --meta MSGI --load_ilp --tr_epi 20 --num_iter 1 --num_timesteps 25000 --run_id 1
 ```
 
+## Demo video
 
+https://bit.ly/msgi-videos
 

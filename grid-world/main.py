@@ -3,7 +3,6 @@ from collections import deque
 os.environ["OMP_NUM_THREADS"] = "24"
 import numpy as np
 
-from graph.ILP import ILP
 from graph.grprop import GRProp
 from graph.graph_utils import dotdict
 from a2c_ppo_acktr import algo
@@ -15,6 +14,7 @@ from a2c_ppo_acktr.utils import _anneal_param, weights_init, \
                                 _update_print_log, _save_log, prepare_logging, \
                                 _save_eval_log, _print_eval_log
 from environment.batch import Batch_env
+from graph.ILP import ILP
 
 args = get_args()
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu) # this need to be done before importing pytorch

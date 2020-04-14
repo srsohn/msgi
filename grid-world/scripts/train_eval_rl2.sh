@@ -1,3 +1,4 @@
+#!/bin/bash
 # This script reproduces Figure 4 & 5 in the paper
 play_train="--env-name playground --tr_epi 10 --num-updates 8000"
 play_eval="--env-name playground --tr_epi 20"

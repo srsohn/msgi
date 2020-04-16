@@ -1328,14 +1328,9 @@ def anneal(t, t0, t1, v0, v1):
 
 def warfare(envs, observations):
     '''Warfare between the units trained by the agent and the enemy units.'''
-    print("======== [ WARFARE BEGINS IN 2 MINS ] ===========")
     before_war = True
     actives = np.ones(envs.num_envs)
     actions = [_NOOP]*envs.num_envs
-
-    # print current units
-    total_counts = envs.total_counts[0]
-    PRINT_CURRENT_UNITS(total_counts)
 
     while True:
         obs, _, _ = observations['raws']
@@ -1347,12 +1342,10 @@ def warfare(envs, observations):
             before_war = False
 
         if any(dones):
-            print("====================== WAR RESULT ========================")
             if rewards[0] > 0:
-                print("Victory!! The agent has won the battle. [Reward : {}]".format(rewards[0]))
+                print("Victory!! The agent has won the battle.")
             else:
-                print("Defeat!! The agent has been defeated. [Reward : {}]".format(rewards[0]))
-            print("==========================================================")
+                print("Defeat!! The agent has been defeated.")
             frames = 0
             break
     return observations, rewards, dones.astype(np.uint8), frames, total_counts

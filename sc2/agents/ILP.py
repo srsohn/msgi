@@ -61,7 +61,7 @@ class ILP(object):
         torch.save(data, filename)
 
     def load(self, filename='temp/ILP_ep-0.pt'):
-        print('Loading ILP model @ ' + filename)
+        print('\nLoading ILP model @ ' + filename)
         data = torch.load(filename)
         self.comps, self.eligs, self.reward_sum, self.reward_count, self.step, self.opt_count = data
 
@@ -482,7 +482,7 @@ class ILP(object):
 
         return out_list
 
-    
+
     def _eval_graph(self, ep, cond_kmap_set):
         # TP =  gt ^ infer
         # FP = ~gt ^ infer

@@ -3,7 +3,6 @@ import time
 import copy
 import torch
 import numpy as np
-from tqdm import tqdm
 
 from common import flatten_lists
 from common.utils import dotdict
@@ -56,12 +55,9 @@ class Runner:
             graphs, prec, rec = self.ilp.infer_graph(ep=ep, PR=True, eval_mode=True)
             print('prec, rec=', prec.mean(), rec.mean())
 
-            # temperature annealing (BATTLECRUISER)
+            # temperature annealing
             params = dotdict()
-            if self.args.map.startswith('Build'):
-                params.temp = 1 + 49.0 * ( ep ) / ( eval_eps ) # linear scheduling (new)
-            else:
-                params.temp = 2 + 38.0 * ( ep ) / ( eval_eps ) # linear scheduling (old)
+            params.temp = 2 + 38.0 * ( ep ) / ( eval_eps )
 
             test_agent = GRProp(graphs, self.args, self.device, params)
             self.rollout_trial(nb_epi=test_eps, eval_flag=True, agent=test_agent)
@@ -69,11 +65,10 @@ class Runner:
             # store the eval results
             mean_frame = self.cum_frames / self.nb_eval_epi
             mean_score = self.test_score / self.nb_eval_epi
+            print('[ Summary: Ep= {} | Mean score= {} ]'.format(ep, mean_score))
             self.sc2_filewriter.store(ep=ep, mean=mean_score, data=self.ep_scores, ep_len=mean_frame)
             self.sc2_filewriter.save()
 
-            # log
-            print('[ Ep: {} | Score: {} ]'.format(ep, mean_score))
 
     def meta_eval_save(self, num_iter=10, tr_epi=20, test_epi=4):
         '''
@@ -91,7 +86,7 @@ class Runner:
                 graphs, prec, rec = self.ilp.infer_graph(ep=None, PR=False)
                 self.agent = GRProp(graphs, self.args, self.device)
 
-            for epi_ind in tqdm(range(tr_epi), ascii=True, desc="[Iter: {}] Episode".format(i)):
+            for epi_ind in range(tr_epi):
                 self.cur_ep = epi_ind
 
                 # rollout training trial (MSGI & HRL)
@@ -122,7 +117,7 @@ class Runner:
                     mean_frame = self.cum_frames / self.nb_eval_epi
                     mean_score = self.test_score / self.nb_eval_epi
                     logs.stst[epi_ind]  += mean_score
-                    print('[ Ep: {} | Score: {} ]'.format(epi_ind, mean_score))
+                    print('[ Summary: Ep= {} | Mean score= {} ]'.format(epi_ind, mean_score))
                     self.sc2_filewriter.store(ep=epi_ind, mean=mean_score, data=self.ep_scores, ep_len=mean_frame)
                     self.sc2_filewriter.save()
 

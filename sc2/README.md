@@ -5,7 +5,8 @@
 * numpy
 * sklearn
 * scikit-learn
-* tqdm
+
+
 
 
 ## Installation
@@ -19,8 +20,7 @@ In order to run experiments on StarCraft II environment, please follow the [offi
 After the installation, move the custom SC2 scenarios to `StarCraftII/Maps/mini_games` directory:
 
 ```shell
-cd msgi
-cp custom_maps/*.SC2Map [SC2_dir]/StarCraftII/Maps/mini_games/
+cp custom_maps/*.SC2Map <path_to_sc2>/StarCraftII/Maps/mini_games
 ```
 
 #### Install PySC2
@@ -28,7 +28,7 @@ cp custom_maps/*.SC2Map [SC2_dir]/StarCraftII/Maps/mini_games/
 Extract, unzip, and install our modified pySC2 from `data` directory:
 
 ```shell
-cp data/pysc2.zip ../ && cd ..
+cp data/pysc2.zip <path_to_pysc2> && cd <path_to_pysc2>
 unzip pysc2.zip
 cd pysc2
 pip install -e .
@@ -36,21 +36,35 @@ pip install -e .
 
 
 
-## Running the code
+## Running the saved ILP model
+
+To run the saved ILP models for the SC2 scenarios, extract the ILP models from `data` directory:
+
+```shell
+cd <path_to_msgi>/msgi/sc2
+cp data/ILP_models.zip .
+python main.py --map BuildBattleCruiser_20 --meta MSGI --load_ilp --tr_epi 20 --num_timesteps 25000 --run_id 1
+```
+
+
+
+## Running the code from scratch
 
 In order to run MSGI, first run the following to save ILP:
 
 ```shell
-python main.py --map BuildBattleCruiser_20 --meta MSGI --save_ilp --tr_epi 20 --num_iter 1 --num_timesteps 25000 --run_id 1
+python main.py --map BuildBattleCruiser_20 --meta MSGI --save_ilp --tr_epi 20 --num_timesteps 25000 --run_id 1
 ```
 
 And then, run the following:
 
 ```shell
-python main.py --map BuildBattleCruiser_20 --meta MSGI --load_ilp --tr_epi 20 --num_iter 1 --num_timesteps 25000 --run_id 1
+python main.py --map BuildBattleCruiser_20 --meta MSGI --load_ilp --tr_epi 20 --num_timesteps 25000 --run_id 1
 ```
 
-## Demo video
+
+
+## Demo videos
 
 https://bit.ly/msgi-videos
 

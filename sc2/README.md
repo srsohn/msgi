@@ -42,7 +42,7 @@ To run the saved ILP models for the SC2 scenarios, extract the ILP models from `
 
 ```shell
 cd <path_to_msgi>/msgi/sc2
-cp data/ILP_models.zip .
+cp data/ILP_models.zip . && unzip ILP_models.zip
 python main.py --map BuildBattleCruiser_20 --meta MSGI --load_ilp --tr_epi 20 --num_timesteps 25000 --run_id 1
 ```
 

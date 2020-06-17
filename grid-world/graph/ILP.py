@@ -16,8 +16,8 @@ class ILP(object):
     def reset(self, envs):
         self.ntasks = envs.ntasks
         self.step = 0
-        self.tp_inds    = torch.zeros( (self.ntasks+1)*self.tr_epi, self.nenvs, self.ntasks, dtype=torch.uint8)
-        self.elig_inds  = torch.zeros( (self.ntasks+1)*self.tr_epi, self.nenvs, self.ntasks, dtype=torch.uint8)
+        self.tp_inds    = torch.zeros( (self.ntasks+1)*self.tr_epi, self.nenvs, self.ntasks, dtype=torch.bool)
+        self.elig_inds  = torch.zeros( (self.ntasks+1)*self.tr_epi, self.nenvs, self.ntasks, dtype=torch.bool)
         self.reward_sum = torch.zeros(self.nenvs, self.ntasks)
         self.reward_count=torch.zeros(self.nenvs, self.ntasks, dtype=torch.long)
         if self.bonus_mode>0:
@@ -31,13 +31,13 @@ class ILP(object):
         self.tlists = envs.get_subtask_lists()
 
     def insert(self, prev_active, step_done, tp_ind, elig_ind, action_id=None, reward=None):
-        self.tp_inds[self.step].copy_(tp_ind.byte())
-        self.elig_inds[self.step].copy_(elig_ind.byte())
+        self.tp_inds[self.step].copy_(tp_ind.bool())
+        self.elig_inds[self.step].copy_(elig_ind.bool())
 
         # reward
         if not (reward is None):
             action_id = action_id.cpu()
-            active = (prev_active * (~step_done.byte()).long()).unsqueeze(-1)
+            active = (prev_active * (~step_done.bool()).long()).unsqueeze(-1)
             act_inds = self._get_ind_from_id(action_id) * active
             mask = _to_multi_hot(act_inds, self.ntasks).long() * active
             self.reward_sum += torch.zeros_like(self.reward_sum).scatter_(1, act_inds, reward)*(mask.float())
@@ -323,8 +323,8 @@ class ILP(object):
         return root
 
     def compute_gini(self, input_feat, targets):
-        neg_input = ~input_feat.byte()
-        neg_target = ~targets.byte()
+        neg_input = ~input_feat.bool()
+        neg_target = ~targets.bool()
         nn = (neg_input*neg_target).sum().item()   # count[0]
         np = (neg_input*targets).sum().item()      # count[1]
         pn = (input_feat*neg_target).sum().item()  # count[2]

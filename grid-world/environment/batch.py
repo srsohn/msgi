@@ -13,11 +13,11 @@ from environment.batch_graph import Batch_SubtaskGraph
 
 def _get_id_from_ind_multihot(indexed_tensor, mapping, max_dim):
     nbatch = indexed_tensor.shape[0]
-    if isinstance(indexed_tensor, torch.ByteTensor):
-        out = torch.zeros(nbatch, max_dim).byte()
+    if indexed_tensor.dtype == torch.bool or indexed_tensor.dtype == torch.uint8:
+        out = torch.zeros(nbatch, max_dim).bool()
         out.scatter_(1, mapping, indexed_tensor)
     else:
-        print('Error! the input type must be either Bool or Byte')
+        print('Error! the input type must be either Bool')
         print('Input:', indexed_tensor)
         assert False
     return out
@@ -87,7 +87,7 @@ class Batch_env(object):
     def step(self, act_ids):
         act_ids = act_ids.cpu()
         steps = []
-        self.step_done = torch.zeros(self.num_envs).byte()
+        self.step_done = torch.zeros(self.num_envs).bool()
         for i in range(self.num_envs):
             if self.active[i]==1:
                 act_id = act_ids[i].item()
@@ -177,7 +177,7 @@ class Batch_env(object):
         self._update_delayed_states()
         ### 2-3. if episode is done, reset
         task_dones = torch.mul(self.mask_ind.float(), self.elig_ind.float()).sum(1).lt(1)
-        dones = torch.max(task_dones, step_dones.byte())
+        dones = torch.max(task_dones, step_dones.bool())
         self.done_count += dones.long()
         if dones.sum()>0:
             self._reset_episode(dones)  # if episode is done, reset mask, tp

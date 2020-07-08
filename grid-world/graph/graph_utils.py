@@ -39,9 +39,9 @@ def batch_bin_encode(bin_tensor):
     # bin_tensor: Nbatch x dim
     if type(bin_tensor)==torch.Tensor:
         if bin_tensor.dim()==2:
-            return torch.mv(bin_tensor.type(torch.long), torch.from_numpy(1 << np.arange(bin_tensor.shape[-1])) )
+            return torch.mv(bin_tensor.type(torch.int32), torch.from_numpy(1 << np.arange(bin_tensor.shape[-1])) )
         else:
-            return torch.dot(bin_tensor.type(torch.long), torch.from_numpy(1 << np.arange(bin_tensor.shape[-1])) ).item()
+            return torch.dot(bin_tensor.type(torch.int32), torch.from_numpy(1 << np.arange(bin_tensor.shape[-1])) ).item()
     elif type(bin_tensor)==np.ndarray:
         return bin_tensor.dot(1 << np.arange(bin_tensor.shape[-1]))
     else:
